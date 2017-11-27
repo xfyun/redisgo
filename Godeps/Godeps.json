@@ -1,0 +1,17 @@
+{
+	"ImportPath": "git.7s.iflytek.com/sivs_team/redisgo.git",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/garyburd/redigo/internal",
+			"Comment": "v1.2.0",
+			"Rev": "34a326de1fea52965fa5ad664d3fc7163dd4b0a1"
+		},
+		{
+			"ImportPath": "github.com/garyburd/redigo/redis",
+			"Comment": "v1.2.0",
+			"Rev": "34a326de1fea52965fa5ad664d3fc7163dd4b0a1"
+		}
+	]
+}
