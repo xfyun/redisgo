@@ -18,8 +18,9 @@ type Redis struct {
 }
 
 //创建一个redis实例
-func NewRedisInst(addr, password string, maxIdle, db int, idleTimeout time.Duration) (redisInst *Redis, err error) {
+func NewRedisInst(addr, password string, maxIdle, maxActive, db int, idleTimeout time.Duration) (redisInst *Redis, err error) {
 	pool := &redis.Pool{
+		MaxActive:   maxActive,   //设置的最大连接数
 		MaxIdle:     maxIdle,     // 最大的空闲连接数，即使没有redis连接时依然可以保持N个空闲的连接，而不被清除，随时处于待命状态
 		IdleTimeout: idleTimeout, //最大的空闲连接等待时间，超过此时间后，空闲连接将被关闭
 
