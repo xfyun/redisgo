@@ -14,7 +14,7 @@ import (
 )
 
 var(
-	default_idleTimeout = 3600 //默认空闲超时时间（单位：ms）
+	default_idleTimeout = 3600 //默认空闲超时时间（单位：s）
 )
 
 //配置选项
