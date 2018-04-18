@@ -13,52 +13,127 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
+var(
+	default_idleTimeout = 3600 //默认空闲超时时间（单位：ms）
+)
+
+//配置选项
+type RedisCfgOption struct {
+	RedisHost      string        //redis主机(必传)
+	RedisPasswd    string        //redis密码
+	MaxActive      int           //redis最大连接数(maxActive=0代表没连接限制)
+	MaxIdle        int           //redis最大空闲实例数
+	Db             int           //redis数据库
+	IdleTimeOut    time.Duration //redis空闲实例超时设置(单位:s)
+	UseTwemproxy   bool          //使用twem代理
+}
+
+type RedisCfgOpt func(*RedisCfgOption)
+
+//配置代理使用选项
+func WithUseTwemproxy(use bool) RedisCfgOpt {
+	return func(rc *RedisCfgOption) {
+		rc.UseTwemproxy = use
+	}
+}
+
+func WithRedisHost(host string) RedisCfgOpt {
+	return func(rc *RedisCfgOption) {
+		rc.RedisHost = host
+	}
+}
+
+func WithRedisPwd(pwd string) RedisCfgOpt {
+	return func(rc *RedisCfgOption) {
+		rc.RedisPasswd = pwd
+	}
+}
+
+func WithMaxactive(maxactive int) RedisCfgOpt {
+	return func(rc *RedisCfgOption) {
+		rc.MaxActive = maxactive
+	}
+}
+
+func WithMaxIdle(maxidle int) RedisCfgOpt {
+	return func(rc *RedisCfgOption) {
+		rc.MaxIdle =  maxidle
+	}
+}
+
+func WithDb(db int) RedisCfgOpt {
+	return func(rc *RedisCfgOption) {
+		rc.Db =  db
+	}
+}
+
+func WithIdleTimeout(idletimeout time.Duration) RedisCfgOpt {
+	return func(rc *RedisCfgOption) {
+		rc.IdleTimeOut =  idletimeout
+	}
+}
+
 type Redis struct {
 	Pool *redis.Pool
 }
 
 //创建一个redis实例
-func NewRedisInst(addr, password string, maxIdle, maxActive, db int, idleTimeout time.Duration) (redisInst *Redis, err error) {
+func NewRedisInst(o ...RedisCfgOpt) (redisInst *Redis, err error) {
+	var rcOpt = RedisCfgOption{
+		IdleTimeOut:time.Second*time.Duration(default_idleTimeout),
+	}
+		
+	for _, opt := range o {
+		opt(&rcOpt)
+	}
+
+	if rcOpt.RedisHost==""{
+		err =errors.New("redis host is null")
+		return
+	}
+	
+	
 	Pool := &redis.Pool{
-		MaxActive:   maxActive,   //设置的最大连接数
-		MaxIdle:     maxIdle,     // 最大的空闲连接数，即使没有redis连接时依然可以保持N个空闲的连接，而不被清除，随时处于待命状态
-		IdleTimeout: idleTimeout, //最大的空闲连接等待时间，超过此时间后，空闲连接将被关闭
+		MaxActive:   rcOpt.MaxActive,   //设置的最大连接数
+		MaxIdle:     rcOpt.MaxIdle,     // 最大的空闲连接数，即使没有redis连接时依然可以保持N个空闲的连接，而不被清除，随时处于待命状态
+		IdleTimeout: rcOpt.IdleTimeOut, //最大的空闲连接等待时间，超过此时间后，空闲连接将被关闭
 
 		//建立连接
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", addr)
+			c, err := redis.Dial("tcp", rcOpt.RedisHost)
 			if err != nil {
 				return nil, err
 			}
 
 			//password为空，将不进行权限验证
-			if password != "" {
-				if _, err := c.Do("AUTH", password); err != nil {
+			if rcOpt.RedisPasswd != "" {
+				if _, err := c.Do("AUTH", rcOpt.RedisPasswd); err != nil {
 					c.Close()
 					return nil, err
 				}
 			}
 
 			//默认db使用0
-			if _, err := c.Do("SELECT", db); err != nil {
-				c.Close()
-				return nil, err
+			if !rcOpt.UseTwemproxy{
+				if _, err := c.Do("SELECT", rcOpt.Db); err != nil {
+					c.Close()
+					return nil, err
+				}
 			}
 			return c, err
 		},
 
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {
-			_, err := c.Do("PING")
-			return err
+			if !rcOpt.UseTwemproxy{
+				_, err := c.Do("PING")
+				return err
+			}
+			return nil
 		},
 	}
 
 	redisInst = &Redis{
 		Pool: Pool,
-	}
-
-	if redisInst == nil {
-		err = errors.New("create redis instance is nil")
 	}
 
 	return redisInst, err
