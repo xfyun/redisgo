@@ -1,0 +1,4 @@
+# github.com/garyburd/redigo v1.2.0
+## explicit
+github.com/garyburd/redigo/internal
+github.com/garyburd/redigo/redis
