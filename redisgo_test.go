@@ -14,7 +14,13 @@ func TestKeyOp(t *testing.T) {
 		idleTimeOut = time.Second * 200
 		db          = 0
 	)
-	redisInst, err := NewRedisInst(addr, pwd, maxIdle, db, idleTimeOut)
+	redisInst, err := NewRedisInst(
+		WithRedisHost(addr),
+		WithRedisPwd(pwd),
+		WithMaxIdle(maxIdle),
+		WithDb(db),
+		WithIdleTimeout(idleTimeOut),
+	)
 	if err != nil {
 		t.Errorf("create redis inst error:%s", err.Error())
 		return
@@ -86,7 +92,13 @@ func TestStringOp(t *testing.T) {
 		db          = 0
 	)
 
-	redisInst, err := NewRedisInst(addr, pwd, maxIdle, db, idleTimeOut)
+	redisInst, err := NewRedisInst(
+		WithRedisHost(addr),
+		WithRedisPwd(pwd),
+		WithMaxIdle(maxIdle),
+		WithDb(db),
+		WithIdleTimeout(idleTimeOut),
+	)
 	if err != nil {
 		t.Errorf("create redis inst error:%s", err.Error())
 		return
@@ -187,7 +199,13 @@ func TestHashOp(t *testing.T) {
 		db          = 0
 	)
 
-	redisInst, err := NewRedisInst(addr, pwd, maxIdle, db, idleTimeOut)
+	redisInst, err := NewRedisInst(
+		WithRedisHost(addr),
+		WithRedisPwd(pwd),
+		WithMaxIdle(maxIdle),
+		WithDb(db),
+		WithIdleTimeout(idleTimeOut),
+	)
 	if err != nil {
 		t.Errorf("create redis inst error:%s", err.Error())
 		return
@@ -288,7 +306,13 @@ func TestListOp(t *testing.T) {
 		db          = 0
 	)
 
-	redisInst, err := NewRedisInst(addr, pwd, maxIdle, db, idleTimeOut)
+	redisInst, err := NewRedisInst(
+		WithRedisHost(addr),
+		WithRedisPwd(pwd),
+		WithMaxIdle(maxIdle),
+		WithDb(db),
+		WithIdleTimeout(idleTimeOut),
+	)
 	if err != nil {
 		t.Errorf("create redis inst error:%s", err.Error())
 		return
@@ -361,7 +385,13 @@ func TestSetOp(t *testing.T) {
 		idleTimeOut = time.Second * 200
 		db          = 0
 	)
-	redisInst, err := NewRedisInst(addr, pwd, maxIdle, db, idleTimeOut)
+	redisInst, err := NewRedisInst(
+		WithRedisHost(addr),
+		WithRedisPwd(pwd),
+		WithMaxIdle(maxIdle),
+		WithDb(db),
+		WithIdleTimeout(idleTimeOut),
+	)
 	if err != nil {
 		t.Errorf("create redis inst error:%s", err.Error())
 		return
@@ -462,7 +492,13 @@ func TestSortedSetOp(t *testing.T) {
 		idleTimeOut = time.Second * 200
 		db          = 0
 	)
-	redisInst, err := NewRedisInst(addr, pwd, maxIdle, db, idleTimeOut)
+	redisInst, err := NewRedisInst(
+		WithRedisHost(addr),
+		WithRedisPwd(pwd),
+		WithMaxIdle(maxIdle),
+		WithDb(db),
+		WithIdleTimeout(idleTimeOut),
+	)
 	if err != nil {
 		t.Errorf("create redis inst error:%s", err.Error())
 		return
@@ -560,7 +596,13 @@ func TestMsgOp(t *testing.T) {
 		idleTimeOut = time.Second * 200
 		db          = 0
 	)
-	redisInst, err := NewRedisInst(addr, pwd, maxIdle, db, idleTimeOut)
+	redisInst, err := NewRedisInst(
+		WithRedisHost(addr),
+		WithRedisPwd(pwd),
+		WithMaxIdle(maxIdle),
+		WithDb(db),
+		WithIdleTimeout(idleTimeOut),
+	)
 	if err != nil {
 		t.Errorf("create redis inst error:%s", err.Error())
 		return
