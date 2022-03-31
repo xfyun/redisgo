@@ -1,5 +1,5 @@
-module git.iflytek.com/AIaaS/redisgo
+module github.com/xfyun/redisgo
 
-go 1.16
+go 1.18
 
-require github.com/garyburd/redigo v1.2.0
+require github.com/garyburd/redigo v1.6.3
